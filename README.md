@@ -1,7 +1,7 @@
 # Efficient LLMs Inference via Similarity-Aware KV Cache Merging with Bias Calibration
 
 This repository contains the code for the paper *Efficient LLMs Inference via Similarity-Aware KV Cache Merging with Bias Calibration*.  
-
+![Project Logo](analysis/Illustration.png)
 The continuously growing key-value (KV) Cache during the inference of large language models (LLMs) becomes an obstacle to efficient deployment. Recently, KV Cache compression techniques such as evicting and merging KV pairs have been widely studied, which play an important role in reducing memory
 usage in the decoding phase of LLM inference. However, these methods inevitably cause problems of output perturbation and
 computational redundancy. In this paper, we propose SimCalKV, a theoretically grounded merging strategy that identifies the optimal merging under key similarity assumptions. By averaging
