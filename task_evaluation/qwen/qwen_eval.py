@@ -248,7 +248,7 @@ def load_task_dataset(name, split="validation[:10]"):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_name", type=str, default="/root/autodl-tmp/Qwen2.5-7B-Instruct")
+    parser.add_argument("--model_name", type=str, default="Qwen/Qwen2.5-7B-Instruct")
     parser.add_argument("--dataset", type=str, default="xsum", 
                         help="Dataset name, e.g. xsum, piqa, openbookqa, winogrande, THUDM/LongBench/gov_report")
     parser.add_argument("--split", type=str, default="test[:5]")
