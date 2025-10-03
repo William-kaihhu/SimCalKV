@@ -7,9 +7,19 @@ This repository contains the code for the paper *Efficient LLMs Inference via Si
   <img src="analysis/Illustration.png" alt="Project Illustration" width="400">
 </p>
 
-## 🔧 Usage
+## Setup
+The code runs in the environment specified in the `environment.yml`.
+You can create the environment using:
+
+```bash
+conda env create -f environment.yml
+conda activate <simcalkv>
+```
+## Usage
 
 ### Quick Start
+The `run.txt` file contains two simple commands that can be executed locally for testing.
+
 Run the inference using the following command. The model path needs to be specified manually, while the dataset, compression ratio and compression method can all be found and selected in the code.
 ```bash
 python qwen_eval.py \
@@ -26,7 +36,7 @@ python qwen_eval.py \
 * `--kv_method`: Compression method
 * `--output_dir`: Directory to save results
 
-## 📊 Example Runs
+### Evaluation
 
 Summarization (CNN/DailyMail):
 
@@ -40,7 +50,7 @@ LongBench (Gov_Report):
 python llama_eval.py --model_name meta-llama/Llama-2-7b-hf --dataset THUDM/LongBench/gov_report --split "validation[:200]" --compress_ratio 0.8 --kv_method PyramidInfer --output_dir results
 ```
 
-## 📈 Output
+### Output
 
 * **CSV**: per-sample results
 * **JSON**: summary of memory saving, time, throughput and task metrics
