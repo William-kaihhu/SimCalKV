@@ -59,31 +59,31 @@ Example JSON output:
 
 ```json
 {
-  "dataset": "cnn_dailymail",
+  "dataset": "xsum",
   "kv_method": "SimCalKV",
   "metrics_before": {
     "rouge": {
-      "rouge1": 0.10714013333814124,
-      "rouge2": 0.02781681275643416,
-      "rougeL": 0.08525080988456278,
-      "rougeLsum": 0.09594273935649743
+      "rouge1": 0.15230159966471968,
+      "rouge2": 0.035806399649708456,
+      "rougeL": 0.10861646757685024,
+      "rougeLsum": 0.12930424264145873
     }
   },
   "metrics_after": {
     "rouge": {
-      "rouge1": 0.0648173225671974,
-      "rouge2": 0.01509357533851916,
-      "rougeL": 0.05245519933253466,
-      "rougeLsum": 0.05725653116114888
+      "rouge1": 0.12410774724904501,
+      "rouge2": 0.013638554216867469,
+      "rougeL": 0.0902366106368532,
+      "rougeLsum": 0.10719503661892989
     }
   },
-  "avg_memory_saving_MB": 201.81640625,
-  "time_before": 33.558887767791745,
-  "time_after": 28.53268699645996,
-  "avg_time_saving_s": 5.026200771331784,
-  "throughput_before": 25.810928309960286,
-  "throughput_after": 28.349171832657607,
-  "avg_throughput_improvement_tokens_s": 2.5382435226973215
+  "avg_memory_saving_MB": 3.575,
+  "time_before": 5.830803775787354,
+  "time_after": 11.368823432922364,
+  "avg_time_saving_s": -5.53801965713501,
+  "throughput_before": 27.04814875831242,
+  "throughput_after": 29.366463269526253,
+  "avg_throughput_improvement_tokens_s": 2.318314511213835
 }
 ```
 
