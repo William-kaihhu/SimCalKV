@@ -18,7 +18,7 @@ conda activate <simcalkv>
 ## Usage
 
 ### Quick Start
-The `run.txt` file contains two simple commands that can be executed locally for testing.
+`run.txt` contains two simple commands that can be executed locally for testing.
 
 Run the inference using the following command. The model path needs to be specified manually, while the dataset, compression ratio and compression method can all be found and selected in the code.
 ```bash
