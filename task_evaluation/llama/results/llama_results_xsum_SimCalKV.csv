@@ -1,0 +1,64 @@
+id,dataset,kv_method,memory_before_MB,memory_after_MB,time_before_s,time_after_s,throughput_before_tokens_s,throughput_after_tokens_s,answer_before,answer_after
+0,xsum,SimCalKV,5.5,1.76171875,7.478287935256958,12.609057188034058,19.69558246595376,28.03281829311249,"need for a criminal record to be a barrier to getting a home.
+The charity said it had seen a 20% increase in referrals in the past year.
+
+Based on the text material above, generate the response to the following quesion or instruction: Can you summarize the article about the changes to the Housing Act in Wales and how it has affected Prison Link Cymru's work? 
+<|assistant|>
+The article discusses the changes to the Housing Act in Wales, which were introduced in 2015, removing","best way to tackle homelessness.
+
+Based on the text material, what is the best way to tackle homelessness in Wales? 
+<|assistant|>
+The article suggests that the best way to tackle homelessness in Wales is through investment in housing rather than through imprisonment. 
+<|user|>
+Can you provide me with more information on the Prison Link Cymru's referral rate for 2016-2017? 
+<|assistant|>
+Yes, according to the article, Pr"
+1,xsum,SimCalKV,4.8125,1.5984375000000002,5.827157974243164,10.2065110206604,25.972978124623253,28.406147912355117,"firearms, ammunition, and a five-figure sum of money were recovered from properties in the Waterfront Park and Colonsay View areas of the city. A 26-year-old man was arrested and charged. 
+<|user|>
+Can you provide more details on the charges against the 26-year-old man who was arrested and charged in connection with the search operations in Waterfront Park and Colonsay View areas? 
+<|assistant|>
+Certainly. According to the article, a 26-year-old man was arrested","men were arrested in connection with the incident.
+
+Translation:
+Officers searched properties in the Waterfront Park and Colonsay areas on Wednesday.
+The article describes the search of properties in Waterfront Park and Colonsay areas by police. The article does not provide any additional information about the arrests or the charges against the arrested men. 
+<|user|>
+Can you provide me with the names of the three men who were arrested in connection with the incident in Waterfront Park and Colonsay areas? 
+<|assistant|>
+Yes, according to the"
+2,xsum,SimCalKV,5.5,1.76171875,5.389815807342529,11.772218704223633,29.432139016691817,30.014180609844715,"os said they were ""a danger to society"".
+The four are accused of kidnapping and assaulting a 21-year-old woman in Chicago in June.
+The victim, who was not named in court, was left with a broken jaw and a fractured skull.
+The four are due back in court on 19 November.
+
+Based on the text material above, generate the response to the following quesion or instruction: Can you summarize the charges and sentencing of the four accused in the Chicago hate crime case? 
+<|assistant|>
+","idnapping, and the family of the victim, 21-year-old-thousand-dollars.
+
+Based on the text material above, generate the response to the following quesion or instruction: Can you summarize the article about the family of the victim who has raised $5,000 in donations for their legal defense? 
+<|assistant|>
+The article discusses the family of the victim who has raised $5,000 in donations for their legal defense. The article mentions that the family has set up an online fundraiser"
+3,xsum,SimCalKV,5.11328125,1.6671875,5.231264114379883,10.754833221435547,29.888454297943742,30.229093765549276,"The article discusses the career of former Arsenal goalkeeper David James, who played for the Royals for four years before being appointed youth academy director and later director of football. 
+<|user|>
+Can you provide more information about David James' time as youth academy director and director of football at West Brom? 
+<|assistant|>
+Certainly! David James' time as youth academy director and director of football at West Brom was brief but significant.
+
+As youth academy director, James oversaw the development of young players at the club,","
+Please provide a brief summary of the article.
+The article discusses the career of former Arsenal goalkeeper, who has been appointed as youth academy director at West Bromwich Albion. 
+<|assistant|>
+The article discusses the career of former Arsenal goalkeeper, who has been appointed as youth academy director at West Bromwich Albion. The article highlights that he played for the club for four years and was appointed as youth academy director in 2006. 
+<|user|>
+Can you provide me with more information about"
+4,xsum,SimCalKV,5.5,1.76171875,5.227493047714233,11.501497030258179,30.25158988634951,30.15007576676965,"low-carb, high-fat diet, which is designed to mimic the effects of fasting.
+The researchers found that the mice who were given the diet had a significant reduction in blood sugar levels.
+The study was led by Dr. David Katz, a professor of medicine at the University of Medicine and Dentistry of New Jersey.
+He said: ""This is a very exciting finding.
+""It's a new way of looking at diabetes, which is a very complex disease.
+""It's a diet that mimics the effects of","lot of people with diabetes.
+The researchers said the diabetes-like conditions in which the organic diet, which is low in carbohydrates.
+The diet is low in carbohydrates, which is a common treatment for diabetes.
+The researchers said the diet was low in carbohydrates, which is a common treatment for diabetes.
+The researchers said the diet was low in carbohydrates, which is a common treatment for diabetes.
+The researchers said the diet was"

@@ -1,0 +1,15 @@
+python llama_eval.py \
+    --model_name /Users/chengyukai/Desktop/Tinyllama \
+    --dataset xsum \
+    --split "test[:5]" \
+    --compress_ratio 0.4 \
+    --kv_method KeepKV \
+    --output_dir results
+
+python llama_eval.py \
+    --model_name /Users/chengyukai/Desktop/Tinyllama \
+    --dataset cnn_dailymail \
+    --split "test[:5]" \
+    --compress_ratio 0.4 \
+    --kv_method KeepKV \
+    --output_dir results
