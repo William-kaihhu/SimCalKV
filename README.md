@@ -70,7 +70,7 @@ Example JSON output:
       "rougeLsum": 0.05725653116114888
     }
   },
-  "avg_memory_saving_MB": 0.81640625,
+  "avg_memory_saving_MB": 201.81640625,
   "time_before": 33.558887767791745,
   "time_after": 28.53268699645996,
   "avg_time_saving_s": 5.026200771331784,
