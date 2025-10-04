@@ -13,7 +13,7 @@ You can create the environment using:
 
 ```bash
 conda env create -f environment.yml
-conda activate <simcalkv>
+conda activate simcalkv
 ```
 ## Usage
 
