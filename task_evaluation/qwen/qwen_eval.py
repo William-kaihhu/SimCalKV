@@ -41,7 +41,6 @@ def evaluate_example(model, tokenizer, prompt, reference, method="SimCalKV", com
 
     for i in range(1):  # Inference
         print(f"  > Performing inference {i + 1}/1...")
-
         with torch.no_grad():
             outputs = model(**inputs, output_attentions=True, output_hidden_states=True)
             past_key_values = outputs.past_key_values
@@ -51,7 +50,7 @@ def evaluate_example(model, tokenizer, prompt, reference, method="SimCalKV", com
         # -------- baseline --------
         next_token_id, past_key_values = generate_token_with_past(model, inputs)
         start_time_before = time.time()
-        total_kv, generated_tokens, durations_cached_s = generate_text(model, tokenizer, 500, {
+        total_kv, _, generated_tokens, durations_cached_s, _, _ = generate_text(model, tokenizer, 256, {
             "input_ids": next_token_id.reshape((1, 1)),
             "attention_mask": torch.cat(
                 [inputs["attention_mask"], torch.tensor([[1]], device=device)], dim=1
@@ -72,25 +71,51 @@ def evaluate_example(model, tokenizer, prompt, reference, method="SimCalKV", com
         # -------- compressed --------
         # past_key_values_merged = Repair(model, past_key_values, attention, hidden_states, compress_ratio)
         start_time_after = time.time()
+        kv_decode_merged = None
+        total_kv_merged_1 = None
+        generated_tokens_merged_1 = []
+        generated_tokens_merged = []
+        durations_cached_s_merged_1 = []
+        durations_cached_s_merged = []
+        attention_mask1 = torch.tensor([[1]])
+        next_inputs = inputs
         past_key_values_merged = apply_kv_method(method, model, past_key_values, attention, hidden_states, compress_ratio)
-        total_kv_merged, generated_tokens_merged, durations_cached_s_merged = generate_text(model, tokenizer, 500, {
-            "input_ids": next_token_id.reshape((1, 1)),
-            "attention_mask": torch.cat(
-                [inputs["attention_mask"], torch.tensor([[1]], device=device)], dim=1
-            ),
-            "past_key_values": past_key_values_merged,
-        })
+        for j in range(2):
+            if j == 0:
+                next_inputs = {
+                    "input_ids": next_token_id.reshape((1, 1)),
+                    "attention_mask": torch.cat(
+                        [inputs["attention_mask"], torch.tensor([[1]], device=device)], dim=1
+                    ),
+                    "past_key_values": past_key_values_merged,
+                }
+                total_kv_merged_1, attention_mask1, generated_tokens_merged_1, durations_cached_s_merged_1, attention_merged, hidden_states_merged = \
+                    generate_text(model, tokenizer, 128, next_inputs)
+                kv_decode_merged = apply_kv_method(method, model, total_kv_merged_1, attention_merged, hidden_states_merged, compress_ratio)
+            else:
+                next_inputs = {
+                    "input_ids": generated_tokens_merged_1[-1].reshape((1, 1)),
+                    "attention_mask": torch.cat(
+                        [attention_mask1, torch.tensor([[1]], device=device)], dim=1
+                    ),
+                    "past_key_values": kv_decode_merged,
+                }
+                total_kv_merged, _, generated_tokens_merged, durations_cached_s_merged, attention_merged, hidden_states_merged = \
+                    generate_text(model, tokenizer, 128, next_inputs)
+                kv_decode_merged = apply_kv_method(method, model, total_kv_merged, attention_merged, hidden_states_merged, compress_ratio)
+        
         total_after = time.time() - start_time_after
-        memory_after = measure_kv_memory(total_kv_merged)
-        n_tokens_after = len(generated_tokens_merged)
-        total_generation_time_after = sum(durations_cached_s_merged)
+        memory_after = measure_kv_memory(kv_decode_merged)
+        n_tokens_after = len(generated_tokens_merged_1) + len(generated_tokens_merged)
+        total_generation_time_after = sum(durations_cached_s_merged_1)+ sum(durations_cached_s_merged)
         throughput_after = n_tokens_after / total_generation_time_after
 
         memory_after_list.append(memory_after)
         time_after_list.append(total_after)
         throughput_after_list.append(throughput_after)
+        all_generated_tokens = generated_tokens_merged_1 + generated_tokens_merged
         if i == 0: 
-            answer_after = tokenizer.decode(generated_tokens_merged, skip_special_tokens=True, clean_up_tokenization_spaces=True)
+            answer_after = tokenizer.decode(all_generated_tokens, skip_special_tokens=True, clean_up_tokenization_spaces=True)
 
     avg_memory_before = sum(memory_before_list) / len(memory_before_list)
     avg_time_before = sum(time_before_list) / len(time_before_list)
