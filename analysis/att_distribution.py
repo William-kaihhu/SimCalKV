@@ -33,8 +33,8 @@ with torch.no_grad():
     outputs = model(**inputs)
     attentions = outputs.attentions
 
-layer = 18   # 自己选择
-head = 3    # 自己选择
+layer = 18  
+head = 3    
 attention_map = attentions[layer][0, head].cpu().numpy()  # shape (seq_len, seq_len)
 
 all_attention = attention_map.flatten()
