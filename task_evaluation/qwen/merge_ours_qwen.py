@@ -23,21 +23,41 @@ def merge_by_token_tensor(key1: torch.Tensor, key2: torch.Tensor) -> torch.Tenso
 
 def stable_pair_weight(q: torch.Tensor, k_e: torch.Tensor, k_c: torch.Tensor) -> Tuple[float, float]:
     """
-    Compute weights for Ve and Vc in a numerically stable way.
-    We compute two logits: l_e = (q @ k_e) / sqrt(d), l_c = (q @ k_c) / sqrt(d)
-    Then apply softmax over [l_e, l_c] and return weights (w_e, w_c) as floats.
-    q: (1, d) or (d,), k_e/k_c: (d,) or (1,d)
+    Compute unnormalized attention weights (no softmax) for stability.
+    w_e = exp((q·k_e)/sqrt(d)), w_c = exp((q·k_c)/sqrt(d))
+    Both are clamped to prevent overflow.
+
+    Args:
+        q: (1, d) or (d,)
+        k_e, k_c: (d,) or (1, d)
+
+    Returns:
+        (w_e, w_c): unnormalized weights as floats
     """
-    if q.dim() == 2: qv = q.squeeze(0)
-    else: qv = q
+    if q.dim() == 2:
+        qv = q.squeeze(0)
+    else:
+        qv = q
     d = qv.shape[-1]
-    l_e = torch.dot(qv, k_e.view(-1)) / math.sqrt(d)
-    l_c = torch.dot(qv, k_c.view(-1)) / math.sqrt(d)
-    logits = torch.stack([l_e, l_c], dim=0)  # (2,)
-    # clamp logits for numerical safety
-    logits = torch.clamp(logits, min=-50.0, max=50.0)
-    probs = F.softmax(logits, dim=0)  # (2,)
-    return float(probs[0].item()), float(probs[1].item())
+    k_e = k_e.view(-1)
+    k_c = k_c.view(-1)
+    # compute logits
+    l_e = torch.dot(qv, k_e) / math.sqrt(d)
+    l_c = torch.dot(qv, k_c) / math.sqrt(d)
+
+    # exponentiate safely
+    l_e = torch.clamp(l_e, min=-50.0, max=50.0)
+    l_c = torch.clamp(l_c, min=-50.0, max=50.0)
+
+    w_e = torch.exp(l_e)
+    w_c = torch.exp(l_c)
+
+    # clamp final weights to avoid zeros
+    eps = 1e-8
+    w_e = max(w_e.item(), eps)
+    w_c = max(w_c.item(), eps)
+
+    return w_e, w_c
 
 # ---------------------- q extraction ----------------------
 def get_q_proj_from_attn(attn_module, hidden_states: torch.Tensor) -> torch.Tensor:
