@@ -31,15 +31,11 @@ def get_qt(layer_idx: int, head_idx: int, model, hidden_states: List[torch.Tenso
     return Q[0, head_idx, -1].unsqueeze(0)
 
 
-def get_w(q: torch.Tensor, k: torch.Tensor) -> float:
-    """
-    Compute attention weight between q and k using a softmax over two logits.
-    Returns a scalar float.
-    """
-    d = q.shape[1]
-    logits = torch.stack([q @ k.transpose(0, -1), torch.zeros(1, device=q.device)]) / math.sqrt(d)
-    probs = F.softmax(logits, dim=0)
-    return float(probs[0].item())
+def get_w(q, k):
+    dim = q.shape[1]
+    w = torch.exp((q @ k.transpose(0, -1)) / math.sqrt(dim))
+    w = torch.clamp(w, min=eps)
+    return w.item()
 
 
 # -------------------- divide layer --------------------
