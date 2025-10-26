@@ -26,7 +26,7 @@ Detailed information can be found in `setup`.
 ## Usage
 
 ### Quick Start
-`run.txt` contains two simple commands that can be executed locally for testing.
+`run.txt` contains commands that can be executed locally for testing. **nums_token** refers to the number of tokens in the prefill and decoding phase respectively. The specific value can be set in `llama_eval.py`
 
 Run the inference using the following command. The model path needs to be specified manually, while the dataset, compression ratio and compression method can all be found and selected in the code.
 ```bash
