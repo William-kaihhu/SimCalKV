@@ -1,3 +1,6 @@
+import os
+os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
+
 import torch 
 import time
 import argparse
@@ -8,6 +11,7 @@ import evaluate
 import json
 import os
 from merge_ours import Repair
+from merge_lerp import Repair_lerp
 from utils import generate_token_with_past, generate_text
 
 # -------------------- KV Cache Memory Calculation --------------------
@@ -22,6 +26,14 @@ def measure_kv_memory(past_key_values):
 def apply_kv_method(method, model, past_key_values, attention, hidden_states, compress_ratio):
     if method == "SimCalKV":
         return Repair(model, past_key_values, attention, hidden_states, compress_ratio)
+    elif method == "SlerpKV":
+        from merge_slerp import Repair_slerp
+        return Repair_slerp(model, past_key_values, attention, hidden_states, compress_ratio)
+    elif method == "LerpKV":
+        return Repair_lerp(model, past_key_values, attention, hidden_states, compress_ratio)
+    elif method == "NlerpKV":
+        from merge_nlerp import Repair_nlerp
+        return Repair_nlerp(model, past_key_values, attention, hidden_states, compress_ratio)
     elif method == "KeepKV":
         from merge_keepkv import KeepKV
         return KeepKV(model, past_key_values, attention, hidden_states, compress_ratio)
@@ -33,7 +45,7 @@ def apply_kv_method(method, model, past_key_values, attention, hidden_states, co
 
 # -------------------- Evaluation --------------------
 def evaluate_example(model, tokenizer, prompt, reference, method="SimCalKV", compress_ratio=0.1, device="mps"):
-    inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=128).to(device)
+    inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=256).to(device)
     # save the results
     memory_before_list, time_before_list, throughput_before_list = [], [], []
     memory_after_list, time_after_list, throughput_after_list = [], [], []
@@ -48,9 +60,9 @@ def evaluate_example(model, tokenizer, prompt, reference, method="SimCalKV", com
             hidden_states = outputs.hidden_states
 
         # -------- baseline --------
-        next_token_id, past_key_values = generate_token_with_past(model, inputs)
         start_time_before = time.time()
-        total_kv, _, generated_tokens, durations_cached_s, _, _ = generate_text(model, tokenizer, 256, {
+        next_token_id, past_key_values = generate_token_with_past(model, inputs)
+        total_kv, _, generated_tokens, durations_cached_s, _, _ = generate_text(model, tokenizer, 512, {
             "input_ids": next_token_id.reshape((1, 1)),
             "attention_mask": torch.cat(
                 [inputs["attention_mask"], torch.tensor([[1]], device=device)], dim=1
@@ -73,12 +85,14 @@ def evaluate_example(model, tokenizer, prompt, reference, method="SimCalKV", com
         start_time_after = time.time()
         kv_decode_merged = None
         total_kv_merged_1 = None
+        total_kv_merged = None
         generated_tokens_merged_1 = []
         generated_tokens_merged = []
         durations_cached_s_merged_1 = []
         durations_cached_s_merged = []
         attention_mask1 = torch.tensor([[1]])
         next_inputs = inputs
+        #past_key_values_merged = past_key_values
         past_key_values_merged = apply_kv_method(method, model, past_key_values, attention, hidden_states, compress_ratio)
         for j in range(2):
             if j == 0:
@@ -90,8 +104,9 @@ def evaluate_example(model, tokenizer, prompt, reference, method="SimCalKV", com
                     "past_key_values": past_key_values_merged,
                 }
                 total_kv_merged_1, attention_mask1, generated_tokens_merged_1, durations_cached_s_merged_1, attention_merged, hidden_states_merged = \
-                    generate_text(model, tokenizer, 128, next_inputs)
-                kv_decode_merged = apply_kv_method(method, model, total_kv_merged_1, attention_merged, hidden_states_merged, compress_ratio)
+                    generate_text(model, tokenizer, 256, next_inputs)
+                kv_decode_merged = total_kv_merged_1
+                #kv_decode_merged = apply_kv_method(method, model, total_kv_merged_1, attention_merged, hidden_states_merged, compress_ratio)
             else:
                 next_inputs = {
                     "input_ids": generated_tokens_merged_1[-1].reshape((1, 1)),
@@ -101,11 +116,11 @@ def evaluate_example(model, tokenizer, prompt, reference, method="SimCalKV", com
                     "past_key_values": kv_decode_merged,
                 }
                 total_kv_merged, _, generated_tokens_merged, durations_cached_s_merged, attention_merged, hidden_states_merged = \
-                    generate_text(model, tokenizer, 128, next_inputs)
-                kv_decode_merged = apply_kv_method(method, model, total_kv_merged, attention_merged, hidden_states_merged, compress_ratio)
+                    generate_text(model, tokenizer, 256, next_inputs)
+                #kv_decode_merged = apply_kv_method(method, model, total_kv_merged, attention_merged, hidden_states_merged, compress_ratio)
         
         total_after = time.time() - start_time_after
-        memory_after = measure_kv_memory(kv_decode_merged)
+        memory_after = measure_kv_memory(total_kv_merged)
         n_tokens_after = len(generated_tokens_merged_1) + len(generated_tokens_merged)
         total_generation_time_after = sum(durations_cached_s_merged_1)+ sum(durations_cached_s_merged)
         throughput_after = n_tokens_after / total_generation_time_after
@@ -141,7 +156,7 @@ def evaluate_example(model, tokenizer, prompt, reference, method="SimCalKV", com
 def load_task_dataset(name, split="validation[:10]"):
     try:
         if name == "cnn_dailymail":
-            ds = load_dataset(name, "3.0.0", split=split, trust_remote_code=True)
+            ds = load_dataset(name, "3.0.0", split=split)
         elif "THUDM/LongBench" in name:
             subtask = name.split("/")[-1]
             ds = load_dataset("THUDM/LongBench", subtask, split=split, trust_remote_code=True)
@@ -279,12 +294,12 @@ def main():
     parser.add_argument("--split", type=str, default="test[:5]")
     parser.add_argument("--compress_ratio", type=float, default=0.4)
     parser.add_argument("--kv_method", type=str, default="SimCalKV", 
-                        choices=["SimCalKV", "KeepKV", "PyramidInfer"])
+                        choices=["SimCalKV", "KeepKV", "PyramidInfer", "LerpKV", "SlerpKV", "NlerpKV"])
     parser.add_argument("--output_dir", type=str, default="results")  
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
-    device = "mps"
+    device = "cuda"
     print(f"Results will be saved to: {args.output_dir}")
 
     
@@ -318,6 +333,7 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(
         args.model_name,
         device_map=device,
+        # device_map="auto",
         torch_dtype="auto",
         attn_implementation="eager"
     )
@@ -387,6 +403,8 @@ def main():
             summary = {
                 "dataset": dataset,
                 "kv_method": args.kv_method,
+                "model_name": args.model_name,
+                "compress_ratio": args.compress_ratio, 
                 "metrics_before": score_before,
                 "metrics_after": score_after,
                 "avg_memory_saving_MB": df["memory_before_MB"].mean() - df["memory_after_MB"].mean(),
