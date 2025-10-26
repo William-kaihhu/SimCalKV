@@ -8,13 +8,21 @@ This repository contains the code for the paper *Efficient LLMs Inference via Si
 </p>
 
 ## Setup
-The code runs in the environment specified in the `environment.yml`.
+The code runs in the environment specified in the `setup/environment.yml`.
 You can create the environment using:
 
 ```bash
 conda env create -f environment.yml
 conda activate simcalkv
 ```
+Another way to create virtual environment:
+```bash
+python3.10 -m venv simcalkv
+source simcalkv/bin/activate
+
+pip install -r requirements.txt
+```
+Detailed information can be found in `setup`.
 ## Usage
 
 ### Quick Start
@@ -41,13 +49,15 @@ python qwen_eval.py \
 Summarization (CNN/DailyMail):
 
 ```bash
-python qwen_eval.py --model_name Qwen/Qwen2.5-7B-Instruct --dataset cnn_dailymail --split "test[:100]" --compress_ratio 0.4 --kv_method SimCalKV --output_dir results
+cd task_evaluation
+python qwen/qwen_eval.py --model_name Qwen/Qwen2.5-7B-Instruct --dataset cnn_dailymail --split "test[:100]" --compress_ratio 0.4 --kv_method SimCalKV --output_dir ./qwen2.5-7b/results/nums_token256+512
 ```
 
 LongBench (Gov_Report):
 
 ```bash
-python llama_eval.py --model_name meta-llama/Llama-2-7b-hf --dataset THUDM/LongBench/gov_report --split "validation[:200]" --compress_ratio 0.8 --kv_method PyramidInfer --output_dir results
+cd task_evaluation
+python llama/llama_eval.py --model_name meta-llama/Meta-Llama-3.1-8B --dataset THUDM/LongBench/gov_report --split "validation[:200]" --compress_ratio 0.4 --kv_method PyramidInfer --output_dir ./llama3.1-8b/results_optimize/nums_token256+512
 ```
 
 ### Output
