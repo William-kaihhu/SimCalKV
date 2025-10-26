@@ -1,0 +1,13 @@
+torch==2.9.0
+numpy==2.2.6
+matplotlib==3.10.7
+seaborn==0.13.2
+pandas==2.3.3
+transformers==4.46.3
+datasets==4.3.0
+evaluate==0.4.6
+pillow==12.0.0
+accelerate==1.11.0
+absl-py==2.3.1
+nltk==3.9.2
+rouge-score==0.1.2
