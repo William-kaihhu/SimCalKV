@@ -1,15 +1,24 @@
-python llama_eval.py \
-    --model_name /Users/chengyukai/Desktop/Tinyllama \
-    --dataset xsum \
-    --split "test[:5]" \
-    --compress_ratio 0.4 \
-    --kv_method KeepKV \
-    --output_dir results
-
-python llama_eval.py \
-    --model_name /Users/chengyukai/Desktop/Tinyllama \
+cd SimCalKV-local/task_evaluation
+1. python qwen/qwen_eval.py \
+    --model_name "Qwen/Qwen2.5-7B-Instruct" \
     --dataset cnn_dailymail \
-    --split "test[:5]" \
+    --split "test[:50]" \
+    --compress_ratio 0.4 \
+    --kv_method SimCalKV \
+    --output_dir ./qwen2.5-7b/results/nums_token256+512
+
+2. python llama/llama_eval.py \
+    --model_name "TinyLlama/TinyLlama-1.1B-Chat-v1.0" \
+    --dataset xsun \
+    --split "test[:50]" \
     --compress_ratio 0.4 \
     --kv_method KeepKV \
-    --output_dir results
+    --output_dir ./tinyllama-1.1b/results_optimize/nums_token256+512
+
+3. python llama/llama_eval.py \
+    --model_name "meta-llama/Meta-Llama-3.1-8B" \
+    --dataset cnn_dailymail \
+    --split "test[:50]" \
+    --compress_ratio 0.8 \
+    --kv_method SimCalKV \
+    --output_dir ./llama3.1-8b/results_optimize/nums_token256+512
