@@ -1,5 +1,11 @@
-# Efficient LLMs Inference via Similarity-Aware KV Cache Merging with Bias Calibration
+<h1 align="center">Efficient LLMs Inference via Similarity-Aware KV Cache Merging with Bias Calibration</h1>
+<p align="center">
+Yukai Cheng<sup>1</sup>, Wenxuan Zhou<sup>1</sup>, Zhizhou Li<sup>1</sup>, Zhihao Qu<sup>1</sup>, Baoliu Ye<sup>2</sup><br>
+<sup>1</sup>Key Laboratory of Water Big Data Technology of Ministry of Water Resources, Hohai University, China<br>
+<sup>2</sup>State Key Laboratory for Novel Software Technology, Nanjing University, China
+</p>
 
+---
 This repository contains the code for the paper *Efficient LLMs Inference via Similarity-Aware KV Cache Merging with Bias Calibration*.  
 
 <!-- 缩放图片显示 -->
