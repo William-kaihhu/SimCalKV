@@ -36,13 +36,13 @@ Detailed information can be found in `setup`.
 
 Run the inference using the following command. The model path needs to be specified manually, while the dataset, compression ratio and compression method can all be found and selected in the code.
 ```bash
-python qwen_eval.py \
-    --model_name your_model_path \
-    --dataset xsum \
+python llama_eval.py \
+    --model_name "meta-llama/Meta-Llama-3.1-8B" \
+    --dataset cnn_dailymail \
     --split "test[:100]" \
-    --compress_ratio 0.5 \
+    --compress_ratio 0.4 \
     --kv_method SimCalKV \
-    --output_dir results
+    --output_dir ./llama3.1-8b/results_optimize/nums_token512+64
 ```
 * `--dataset`: Dataset name
 * `--split`: Dataset split, e.g. `"validation[:10]"` or `"test[:20]"`
@@ -56,52 +56,20 @@ Summarization (CNN/DailyMail):
 
 ```bash
 cd task_evaluation
-python qwen/qwen_eval.py --model_name Qwen/Qwen2.5-7B-Instruct --dataset cnn_dailymail --split "test[:100]" --compress_ratio 0.4 --kv_method SimCalKV --output_dir ./qwen2.5-7b/results/nums_token256+512
+python llama/llama_eval.py --model_name meta-llama/Meta-Llama-3.1-8B --dataset cnn_dailymail --split "test[:100]" --compress_ratio 0.4 --kv_method SimCalKV --output_dir ./qwen2.5-7b/results/nums_token1024+64
 ```
 
 LongBench (Gov_Report):
 
 ```bash
 cd task_evaluation
-python llama/llama_eval.py --model_name meta-llama/Meta-Llama-3.1-8B --dataset THUDM/LongBench/gov_report --split "validation[:200]" --compress_ratio 0.4 --kv_method PyramidInfer --output_dir ./llama3.1-8b/results_optimize/nums_token256+512
+python llama/llama_eval.py --model_name meta-llama/Meta-Llama-3.1-8B --dataset LongBench/gov_report --split "train[:200]" --compress_ratio 0.4 --kv_method PyramidInfer --output_dir ./llama3.1-8b/results/nums_token4096+512
 ```
 
 ### Output
 
 * **CSV**: per-sample results
 * **JSON**: summary of memory saving, time, throughput and task metrics
-
-Example JSON output:
-
-```json
-{
-  "dataset": "xsum",
-  "kv_method": "SimCalKV",
-  "metrics_before": {
-    "rouge": {
-      "rouge1": 0.15230159966471968,
-      "rouge2": 0.035806399649708456,
-      "rougeL": 0.10861646757685024,
-      "rougeLsum": 0.12930424264145873
-    }
-  },
-  "metrics_after": {
-    "rouge": {
-      "rouge1": 0.12410774724904501,
-      "rouge2": 0.013638554216867469,
-      "rougeL": 0.0902366106368532,
-      "rougeLsum": 0.10719503661892989
-    }
-  },
-  "avg_memory_saving_MB": 3.575,
-  "time_before": 5.830803775787354,
-  "time_after": 11.368823432922364,
-  "avg_time_saving_s": -5.53801965713501,
-  "throughput_before": 27.04814875831242,
-  "throughput_after": 29.366463269526253,
-  "avg_throughput_improvement_tokens_s": 2.318314511213835
-}
-```
 
 ⚡ **Work in progress – under active development.**  
 Updates and improvements will be added continuously.
