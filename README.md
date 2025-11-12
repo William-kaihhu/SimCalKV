@@ -56,7 +56,7 @@ Summarization (CNN/DailyMail):
 
 ```bash
 cd task_evaluation
-python llama/llama_eval.py --model_name meta-llama/Meta-Llama-3.1-8B --dataset cnn_dailymail --split "test[:100]" --compress_ratio 0.4 --kv_method SimCalKV --output_dir ./qwen2.5-7b/results/nums_token1024+64
+python llama/llama_eval.py --model_name meta-llama/Meta-Llama-3.1-8B --dataset cnn_dailymail --split "test[:100]" --compress_ratio 0.4 --kv_method SimCalKV --output_dir ./llama3.1-8b/results/nums_token1024+64
 ```
 
 LongBench (Gov_Report):
