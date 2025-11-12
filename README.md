@@ -51,6 +51,7 @@ python llama_eval.py \
 * `--output_dir`: Directory to save results
 
 ### Evaluation
+We take **LLama3.1-8B** as an example and provide two example commands for running. **Detailed parameter configurations can be found in `eval_instructions`.**
 
 Summarization (CNN/DailyMail):
 
