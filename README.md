@@ -72,5 +72,3 @@ python llama/llama_eval.py --model_name meta-llama/Meta-Llama-3.1-8B --dataset L
 * **CSV**: per-sample results
 * **JSON**: summary of memory saving, time, throughput and task metrics
 
-⚡ **Work in progress – under active development.**  
-Updates and improvements will be added continuously.
